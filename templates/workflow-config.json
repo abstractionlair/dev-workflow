@@ -1,0 +1,14 @@
+{
+  "project_name": "",
+  "active_stages": ["spec", "skeleton", "tests", "implementation"],
+  "skip_stages": ["vision", "scope", "roadmap"],
+  "paths": {
+    "docs": "docs",
+    "specs": "specs",
+    "bugs": "bugs",
+    "rfcs": "rfcs",
+    "reviews": "reviews",
+    "src": "src",
+    "tests": "tests"
+  }
+}
