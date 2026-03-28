@@ -1,11 +1,14 @@
 ---
 name: workflow-review
-description: Review any workflow artifact — specs, implementations, bugs. Gatekeeper for state advancement. Use when an artifact needs review before proceeding.
+description: Review any workflow artifact — macro (design/compliance) or micro (code quality). Gatekeeper for state advancement. Use when an artifact needs review before proceeding.
 ---
 
 # Workflow Review
 
-Review a workflow artifact and optionally advance its state.
+Review a workflow artifact. Two review types:
+
+- **Macro review**: Big picture — design quality for docs, spec fidelity for code. Owns gatekeeper actions.
+- **Micro review**: Line-level code quality, bugs, naming, style. Code artifacts only. No gatekeeper actions.
 
 ## Process
 
@@ -13,76 +16,68 @@ Review a workflow artifact and optionally advance its state.
 
 ```
 Read ~/deploy/dev-workflow/preamble.md
-Read ~/deploy/dev-workflow/roles/reviewer.md
 ```
 
 Follow the preamble instructions to scan project state.
 
-### 2. Identify what to review
+### 2. Determine review type
 
-If the user specified an artifact path, use that.
+If the user specified (e.g., "macro review", "micro review", "code review"), use that.
 
-Otherwise, scan for reviewable artifacts:
+Otherwise, infer:
+- Reviewing docs (vision, scope, roadmap, spec) → always **macro**
+- Reviewing code → default **macro** (checks against spec), suggest micro as follow-up
+
+### 3. Load the reviewer role
+
+**For macro review:**
+```
+Read ~/deploy/dev-workflow/roles/macro-reviewer.md
+```
+
+**For micro review:**
+```
+Read ~/deploy/dev-workflow/roles/micro-reviewer.md
+```
+
+### 4. Identify artifact and load schema
+
+If the user specified an artifact path, use that. Otherwise, scan for reviewable artifacts:
 - `specs/proposed/` — specs awaiting review
-- Check for any artifacts the user mentioned need review
+- Check for any artifacts the user mentioned
 
-If nothing is pending, report: "No artifacts pending review." and suggest `/workflow-spec` or `/workflow-build`.
+| Artifact location | Schema to load |
+|-------------------|----------------|
+| `specs/proposed/` | `~/deploy/dev-workflow/schemas/spec.md` |
+| `docs/VISION.md` | `~/deploy/dev-workflow/schemas/vision.md` |
+| `docs/SCOPE.md` | `~/deploy/dev-workflow/schemas/scope.md` |
+| `docs/ROADMAP.md` | `~/deploy/dev-workflow/schemas/roadmap.md` |
+| Implementation code | Read the spec it implements |
+| `bugs/fixing/` | `~/deploy/dev-workflow/schemas/bug-report.md` |
 
-### 3. Determine artifact type and load schema
+### 5. Perform review and produce review document
 
-| Artifact location | Type | Schema to load |
-|-------------------|------|----------------|
-| `specs/proposed/` | Spec | `~/deploy/dev-workflow/schemas/spec.md` |
-| `docs/VISION.md` | Vision | `~/deploy/dev-workflow/schemas/vision.md` |
-| `docs/SCOPE.md` | Scope | `~/deploy/dev-workflow/schemas/scope.md` |
-| `docs/ROADMAP.md` | Roadmap | `~/deploy/dev-workflow/schemas/roadmap.md` |
-| Implementation code | Implementation | Read the spec it implements |
-| `bugs/fixing/` | Bug fix | `~/deploy/dev-workflow/schemas/bug-report.md` |
+Follow the reviewer role instructions. Write the review to `reviews/<type>/`.
 
-Load the relevant schema:
+### 6. Gatekeeper action (macro review only, if approved)
+
+Macro-reviewer owns state transitions. Ask user confirmation before executing:
+
+| Artifact | Transition |
+|----------|------------|
+| Spec in proposed/ | `git mv specs/proposed/<name>.md specs/todo/<name>.md` |
+| Implementation (all tests pass) | `git mv specs/doing/<name>.md specs/done/<name>.md` |
+| Bug fix (sentinel test added) | `git mv bugs/fixing/<name>.md bugs/fixed/<name>.md` |
+
+Micro-reviewer does NOT perform gatekeeper actions.
+
+### 7. Multi-model note
+
+If reviewing in the same model that wrote the artifact, flag it. For cross-model review, use `workflow-role` in a separate terminal:
+
+```bash
+workflow-role macro-reviewer <project> <artifact>   # gemini for docs, opencode for code
+workflow-role micro-reviewer <project> <artifact>   # opencode (open models)
 ```
-Read ~/deploy/dev-workflow/schemas/<type>.md
-```
 
-### 4. Perform review
-
-Follow the reviewer role instructions. For each artifact:
-
-1. **Read the artifact thoroughly**
-2. **Check against schema** — are all required sections present and well-formed?
-3. **Evaluate quality** — is it clear, complete, unambiguous, implementable?
-4. **Check upstream alignment** — does it align with vision/scope/roadmap/spec?
-5. **Identify issues** — categorize as blocking (must fix) vs. suggestions (nice to have)
-
-### 5. Produce review document
-
-Write the review to `reviews/<type>/<timestamp>-<name>-<VERDICT>.md` following the review schema:
-```
-Read ~/deploy/dev-workflow/schemas/review.md
-```
-
-Verdict must be one of:
-- **APPROVED** — artifact meets quality bar, ready to advance
-- **CHANGES_REQUESTED** — specific issues must be addressed, then re-review
-- **REJECTED** — fundamental problems, needs significant rework
-
-### 6. Gatekeeper action (if approved)
-
-If verdict is APPROVED, perform the state transition:
-
-| Artifact | Transition | Command |
-|----------|------------|---------|
-| Spec in proposed/ | proposed -> todo | `git mv specs/proposed/<name>.md specs/todo/<name>.md` |
-| Implementation (all tests pass) | doing -> done | `git mv specs/doing/<name>.md specs/done/<name>.md` |
-| Bug fix (sentinel test added) | fixing -> fixed | `git mv bugs/fixing/<name>.md bugs/fixed/<name>.md` |
-
-Ask user confirmation before executing the state transition.
-
-### 7. Multi-model review
-
-If you're reviewing your own work (same model wrote and reviews), flag this:
-"Note: same model wrote and is reviewing this artifact. For higher confidence, consider a cross-model review using a different terminal."
-
-Read `~/deploy/dev-workflow/model-config.json` for the recommended review model.
-
-Report status: **DONE** with verdict and any state transitions performed.
+Report status: **DONE** with review type, verdict, and any state transitions.

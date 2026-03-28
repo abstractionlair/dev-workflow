@@ -23,31 +23,22 @@ If the user has a clear feature in mind and wants to write directly, go to **Wri
 If the user wants to explore and clarify their thinking first, go to **Explore** mode.
 If unclear, ask: "Do you want to think this through first, or are you ready to write the spec?"
 
-### 3. Explore mode (spec-helper)
-
-```
-Read ~/deploy/dev-workflow/roles/spec-helper.md
-```
-
-Follow the spec-helper role instructions. Key behaviors:
-- Ask probing questions about interfaces, edge cases, error conditions
-- Challenge assumptions: "What happens when...?"
-- Draw out acceptance criteria through concrete examples
-- Don't prescribe solutions — help the user discover the right design
-- When thinking is clear, transition to Write mode
-
-### 4. Write mode (spec-writer)
+### 3. Load spec-writer role
 
 ```
 Read ~/deploy/dev-workflow/roles/spec-writer.md
 Read ~/deploy/dev-workflow/schemas/spec.md
 ```
 
-Follow the spec-writer role instructions with the spec schema. Key behaviors:
+Follow the spec-writer role instructions. The role covers both exploration (Socratic dialogue about interfaces, edge cases, acceptance criteria) and writing (producing the spec) in one flow. Start with exploration if the user needs to clarify, or go straight to writing if they're ready.
+
+Key behaviors:
+- Ask probing questions about interfaces, edge cases, error conditions
+- Challenge assumptions: "What happens when...?"
+- Draw out acceptance criteria through concrete examples
 - Read existing context (vision, scope, roadmap, system map, guidelines — whatever exists)
 - Write the spec following the schema structure
 - Place the spec in `specs/proposed/<feature-name>.md`
-- Include all required sections: overview, interfaces, acceptance criteria, error handling, dependencies
 
 ### 5. After writing
 

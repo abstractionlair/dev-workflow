@@ -3,16 +3,19 @@
 #
 # Usage:
 #   workflow-role <role> [project-dir] [artifact-path] [-- harness-args...]
-#   workflow-role reviewer ~/projects/work-graph docs/VISION.md
-#   workflow-role spec-helper ~/projects/work-graph
-#   workflow-role spec-writer work-graph
-#   HARNESS=gemini workflow-role reviewer ~/projects/work-graph docs/VISION.md
+#   workflow-role macro-reviewer ~/projects/work-graph docs/VISION.md
+#   workflow-role spec-writer ~/projects/work-graph
+#   workflow-role micro-reviewer work-graph src/engine.py
+#   HARNESS=gemini workflow-role macro-reviewer ~/projects/work-graph docs/VISION.md
 #
-# Roles: reviewer, spec-helper, spec-writer, planning-helper, planning-writer,
+# Roles: planner, spec-writer, macro-reviewer, micro-reviewer,
 #        skeleton-writer, test-writer, implementer
 #
-# If HARNESS is not set, reads the preferred harness from model-config.json.
-# Override with HARNESS=claude|gemini|opencode.
+# Harness selection:
+#   - Most roles: read from model-config.json
+#   - macro-reviewer: depends on artifact type (gemini for docs, opencode for code)
+#   - micro-reviewer: always opencode (open models)
+#   - Override any role: HARNESS=claude|gemini|opencode
 
 set -e
 
@@ -75,30 +78,50 @@ if [ "${1:-}" = "--" ]; then
     shift
 fi
 
-# Determine harness: explicit HARNESS env var > model-config.json
+# Classify artifact as "doc" or "code" for reviewer harness selection
+artifact_class() {
+    local path="$1"
+    case "$path" in
+        docs/VISION*|docs/SCOPE*|docs/ROADMAP*|specs/proposed/*|specs/todo/*)
+            echo "doc" ;;
+        *)
+            echo "code" ;;
+    esac
+}
+
+# Determine harness: explicit HARNESS env var > artifact-aware config lookup
 if [ -z "${HARNESS:-}" ] && [ -f "$CONFIG" ]; then
-    # Read preferred tool from model-config.json
-    TOOL=$(python3 -c "
-import json, sys
+    if [ "$ROLE" = "macro-reviewer" ] && [ -n "$ARTIFACT" ]; then
+        # Macro-reviewer harness depends on artifact type
+        ACLASS=$(artifact_class "$ARTIFACT")
+        if [ "$ACLASS" = "doc" ]; then
+            HARNESS="gemini"
+        else
+            HARNESS="opencode"
+        fi
+    else
+        # All other roles: read preferred tool from config
+        TOOL=$(python3 -c "
+import json
 with open('$CONFIG') as f:
     cfg = json.load(f)
 role_cfg = cfg.get('roles', {}).get('$ROLE', {})
 print(role_cfg.get('tool', 'claude'))
 " 2>/dev/null || echo "claude")
 
-    # tool names in config map directly to harness names
-    case "$TOOL" in
-        claude|gemini|opencode) HARNESS="$TOOL" ;;
-        *) HARNESS="claude" ;;
-    esac
+        case "$TOOL" in
+            claude|gemini|opencode) HARNESS="$TOOL" ;;
+            *) HARNESS="claude" ;;
+        esac
+    fi
 fi
 
 HARNESS="${HARNESS:-claude}"
 
-# Determine schema based on role and artifact
+# Determine schema references based on role and artifact
 SCHEMA=""
 case "$ROLE" in
-    reviewer)
+    macro-reviewer|micro-reviewer)
         # Infer schema from artifact path
         if [[ "$ARTIFACT" == docs/VISION* ]]; then SCHEMA="vision"
         elif [[ "$ARTIFACT" == docs/SCOPE* ]]; then SCHEMA="scope"
@@ -106,16 +129,15 @@ case "$ROLE" in
         elif [[ "$ARTIFACT" == specs/* ]]; then SCHEMA="spec"
         elif [[ "$ARTIFACT" == bugs/* ]]; then SCHEMA="bug-report"
         fi
-        # Also need review schema for output format
         [ -n "$SCHEMA" ] && SCHEMA="$SCHEMA (artifact), review (output format)"
         ;;
-    planning-helper|planning-writer)
+    planner)
         if [[ "$ARTIFACT" == *VISION* ]]; then SCHEMA="vision"
         elif [[ "$ARTIFACT" == *SCOPE* ]]; then SCHEMA="scope"
         elif [[ "$ARTIFACT" == *ROADMAP* ]]; then SCHEMA="roadmap"
         fi
         ;;
-    spec-helper|spec-writer) SCHEMA="spec" ;;
+    spec-writer) SCHEMA="spec" ;;
 esac
 
 # Write active role assignment to project

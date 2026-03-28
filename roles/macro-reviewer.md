@@ -1,16 +1,23 @@
 ---
-role: Reviewer
+role: Macro Reviewer
 trigger: When any artifact is ready for quality evaluation
 dependencies: The artifact under review, its schema, and all upstream artifacts
 outputs: reviews/<category>/YYYY-MM-DDTHH-MM-SS-<name>-<STATUS>.md
 gatekeeper: true
+default-model: gemini for doc artifacts, opencode/gpt-5.4 for code artifacts
 ---
 
-# Reviewer
+# Macro Reviewer
 
-Evaluate artifacts against quality criteria and control forward movement through the workflow. The reviewer is always a **different agent/model than the writer** -- never approve your own work.
+Big-picture review: design quality for docs, spec fidelity for code. The macro reviewer is always a **different agent/model than the writer** -- never approve your own work.
+
+**For docs** (vision, scope, roadmap, spec): evaluates design quality, judgment, taste, and alignment with upstream artifacts.
+
+**For code** (skeleton, tests, implementation): checks against spec -- does this faithfully implement what the spec says?
 
 This is a parameterized role. The same review process applies to all artifact types, with per-type evaluation criteria below.
+
+---
 
 ## Universal Review Process
 
@@ -48,6 +55,8 @@ Apply the per-artifact evaluation criteria (see below). For each section, assess
 
 Write a structured review document (format below) and make a decision.
 
+---
+
 ## Review Output Format
 
 ```
@@ -82,6 +91,8 @@ Write a structured review document (format below) and make a decision.
 **File naming:** `reviews/<category>/YYYY-MM-DDTHH-MM-SS-<name>-<STATUS>.md`
 Use seconds for uniqueness.
 
+---
+
 ## Verdicts
 
 - **APPROVED** -- Quality bar met. Perform gatekeeper action (see below).
@@ -90,7 +101,7 @@ Use seconds for uniqueness.
 
 ## Gatekeeper Actions
 
-The reviewer controls these state transitions (from the ontology):
+The macro reviewer controls these state transitions (from the ontology):
 
 | Artifact | On APPROVED | Transition |
 |----------|-------------|------------|
@@ -102,7 +113,9 @@ The reviewer controls these state transitions (from the ontology):
 | Tests | Approve for implementation (GREEN phase) | (stays in doing/) |
 | Implementation | `git mv specs/doing/ -> specs/done/`; merge branch | doing -> done |
 
-**Only the reviewer performs gatekeeper moves.** Writers and implementers cannot self-approve.
+**Only the macro reviewer performs gatekeeper moves.** Writers, implementers, and micro-reviewers cannot self-approve or advance state.
+
+---
 
 ## Review Types
 
@@ -227,11 +240,9 @@ The reviewer controls these state transitions (from the ontology):
 - Tests: all passing (GREEN). If any fail, reject immediately.
 - Test integrity: tests were NOT modified to make them pass (check diff).
 - Spec compliance: every acceptance criterion met, all edge/error cases handled.
-- Code quality: clear names, focused functions, no duplication, reasonable complexity.
 - Architecture: follows GUIDELINES.md, respects SYSTEM_MAP.md, uses dependency injection, no forbidden imports.
 - Security: no injection vectors (SQL, command), input validation present, no hard-coded secrets, sensitive data not logged.
 - Error handling: all spec exceptions raised, helpful messages, resources cleaned up, no swallowed exceptions.
-- Performance: no obvious N+1 queries, appropriate data structures.
 
 **Gatekeeper:** `git mv specs/doing/<feature>.md specs/done/<feature>.md`; merge feature branch to main.
 
@@ -251,7 +262,7 @@ The reviewer controls these state transitions (from the ontology):
 
 **Approving weakened tests:** If implementer changed `assert result.status == "success"` to `assert result.status in ["success", "ok"]`, that's test weakening -- reject.
 
-**Over-nitpicking style:** Linters handle formatting. Focus on substance: correctness, completeness, security, maintainability.
+**Over-nitpicking style:** Linters handle formatting. Focus on substance: correctness, completeness, security, maintainability. Leave line-level style concerns to the micro-reviewer.
 
 ---
 

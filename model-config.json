@@ -1,29 +1,43 @@
 {
-  "description": "Maps workflow roles to preferred models and harnesses. These are defaults — override with HARNESS=... or by choosing a different terminal.",
+  "description": "Maps workflow roles to preferred models and harnesses. Override with HARNESS=... or by choosing a different terminal.",
   "roles": {
-    "planning-helper": {
-      "tool": "claude",
-      "model": "sonnet",
-      "notes": "Socratic dialogue benefits from conversational fluency"
-    },
-    "planning-writer": {
+    "planner": {
       "tool": "claude",
       "model": "sonnet"
-    },
-    "spec-helper": {
-      "tool": "claude",
-      "model": "sonnet",
-      "notes": "Interface design benefits from broad context"
     },
     "spec-writer": {
       "tool": "claude",
       "model": "sonnet"
     },
-    "reviewer": {
+    "macro-reviewer": {
+      "tool_by_artifact": {
+        "vision": "gemini",
+        "scope": "gemini",
+        "roadmap": "gemini",
+        "spec": "gemini",
+        "skeleton": "opencode",
+        "tests": "opencode",
+        "implementation": "opencode"
+      },
+      "model_by_artifact": {
+        "vision": "gemini-3.1-pro-preview",
+        "scope": "gemini-3.1-pro-preview",
+        "roadmap": "gemini-3.1-pro-preview",
+        "spec": "gemini-3.1-pro-preview",
+        "skeleton": "opencode/gpt-5.4",
+        "tests": "opencode/gpt-5.4",
+        "implementation": "opencode/gpt-5.4"
+      },
+      "notes": "Big picture: design quality for docs (gemini), spec fidelity for code (gpt-5.4). GPT excluded from design processes."
+    },
+    "micro-reviewer": {
       "tool": "opencode",
-      "model": "opencode/gpt-5.4",
-      "variant": "high",
-      "notes": "Cross-model review catches blind spots. Use a different model than the writer."
+      "models": [
+        "opencode-go/glm-5",
+        "opencode-go/minimax-m2.7",
+        "opencode-go/kimi-k2.5"
+      ],
+      "notes": "Line-level code quality. Rotate models for diverse perspectives. Cheap — run multiple passes."
     },
     "skeleton-writer": {
       "tool": "claude",

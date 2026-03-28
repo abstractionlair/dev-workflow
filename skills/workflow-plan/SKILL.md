@@ -33,32 +33,18 @@ If the user wants to think through the artifact, go to **Explore** mode.
 If the user is ready to write, go to **Write** mode.
 Default: start with Explore for the first artifact, Write for subsequent ones.
 
-### 4. Explore mode (planning-helper)
+### 4. Load planner role
 
 ```
-Read ~/deploy/dev-workflow/roles/planning-helper.md
-```
-
-Follow the planning-helper role instructions, parameterized by artifact type:
-
-**Vision exploration**: Why does this project exist? What problem does it solve? Who benefits? What does success look like in 2-5 years?
-
-**Scope exploration**: What's in scope? What's explicitly out? What are the constraints? What are the dependencies? What's deferred to later?
-
-**Roadmap exploration**: What features are needed? In what order? What are the dependencies between features? What's the minimum viable first phase?
-
-When thinking is clear, transition to Write mode.
-
-### 5. Write mode (planning-writer)
-
-```
-Read ~/deploy/dev-workflow/roles/planning-writer.md
+Read ~/deploy/dev-workflow/roles/planner.md
 Read ~/deploy/dev-workflow/schemas/<type>.md
 ```
 
 Where `<type>` is `vision`, `scope`, or `roadmap`.
 
-Follow the planning-writer role. Write the artifact to the appropriate location:
+Follow the planner role instructions. The role covers both exploration (Socratic dialogue) and writing (producing the artifact) in one flow. Start with exploration if the user needs to clarify thinking, or go straight to writing if they're ready.
+
+Write the artifact to the appropriate location:
 - `docs/VISION.md`
 - `docs/SCOPE.md`
 - `docs/ROADMAP.md`

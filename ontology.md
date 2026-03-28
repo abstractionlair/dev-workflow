@@ -129,13 +129,24 @@ Strategic docs don't move between directories. They're versioned in place:
 
 ## Role Catalog
 
-| Role | Layer | Creates | Gates |
-|------|-------|---------|-------|
-| Planning Helper | Strategic | (dialogue) | -- |
-| Planning Writer | Strategic | Vision, Scope, Roadmap | -- |
-| Spec Helper | Design | (dialogue) | -- |
-| Spec Writer | Design | Specs | -- |
-| Reviewer | Quality | Reviews | All state transitions |
-| Skeleton Writer | Code | Interfaces, types | -- |
-| Test Writer | Code | Test suites (RED) | -- |
-| Implementer | Code | Working code (GREEN) | -- |
+| Role | Layer | Creates | Gates | Default Harness |
+|------|-------|---------|-------|-----------------|
+| Planner | Strategic | Vision, Scope, Roadmap | -- | claude |
+| Spec Writer | Design | Specs | -- | claude |
+| Macro Reviewer | Quality | Reviews | All state transitions | gemini (docs), opencode/gpt-5.4 (code) |
+| Micro Reviewer | Quality | Reviews | -- (advisory only) | opencode (open models) |
+| Skeleton Writer | Code | Interfaces, types | -- | claude |
+| Test Writer | Code | Test suites (RED) | -- | claude |
+| Implementer | Code | Working code (GREEN) | -- | claude |
+
+## Review Matrix
+
+| Artifact | Writer | Macro Review | Micro Review |
+|----------|--------|-------------|-------------|
+| Vision | planner | gemini | -- |
+| Scope | planner | gemini | -- |
+| Roadmap | planner | gemini | -- |
+| Spec | spec-writer | gemini | -- |
+| Skeleton | skeleton-writer | opencode/gpt-5.4 | opencode/open model |
+| Tests | test-writer | opencode/gpt-5.4 | opencode/open model |
+| Implementation | implementer | opencode/gpt-5.4 | opencode/open model |
