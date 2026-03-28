@@ -58,8 +58,16 @@ Schemas (what each artifact must contain): `~/projects/dev-workflow/schemas/`
 Role definitions (behavioral instructions): `~/projects/dev-workflow/roles/`
 Model preferences (which model for which role): `~/projects/dev-workflow/model-config.json`
 
-## 6. Multi-Harness Awareness
+## 6. Execution Model
 
-This workflow runs across multiple model harnesses (Claude Code, Codex, Gemini CLI, OpenCode). Artifacts in the project directory are the coordination layer between sessions. When you create or modify an artifact, it will be picked up by whichever harness operates next.
+Each session is launched by the user for a single task. The user orchestrates the workflow — choosing which role to run, in which harness, on which artifact.
+
+- **Atomic sessions**: Complete the task defined in `.workflow/active-role.md`, update artifacts, report status, and stop.
+- **No self-delegation**: Do not fork agents, chain tasks, or launch follow-up sessions automatically unless the user explicitly asks.
+- **Artifact-based handoff**: When your task is done, the artifacts you produced or modified are the handoff to the next session. The user decides what happens next.
+
+## 7. Multi-Harness Awareness
+
+This workflow runs across multiple model harnesses (Claude Code, Gemini CLI, OpenCode). Artifacts in the project directory are the coordination layer between sessions. When you create or modify an artifact, it will be picked up by whichever harness operates next.
 
 Write artifacts that are self-contained and readable without conversation context.

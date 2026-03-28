@@ -140,15 +140,28 @@ case "$ROLE" in
     spec-writer) SCHEMA="spec" ;;
 esac
 
-# Build critical review framing for reviewer roles
-REVIEW_FRAMING=""
+# Build role-specific framing
+ROLE_FRAMING=""
 if [[ "$ROLE" == *reviewer* ]]; then
-    REVIEW_FRAMING="
+    # Infer review category for history path
+    REVIEW_CATEGORY=""
+    if [[ "$ARTIFACT" == docs/VISION* ]]; then REVIEW_CATEGORY="vision"
+    elif [[ "$ARTIFACT" == docs/SCOPE* ]]; then REVIEW_CATEGORY="scope"
+    elif [[ "$ARTIFACT" == docs/ROADMAP* ]]; then REVIEW_CATEGORY="roadmap"
+    elif [[ "$ARTIFACT" == specs/* ]]; then REVIEW_CATEGORY="specs"
+    elif [[ "$ARTIFACT" == bugs/* ]]; then REVIEW_CATEGORY="bugs"
+    else REVIEW_CATEGORY="implementations"
+    fi
+
+    ROLE_FRAMING="
 ## Review expectations
 
 Your honest assessment is valued. There is no penalty for pointing out problems — accurate feedback, including criticism, is genuinely helpful. At the same time, you don't need to force yourself to find faults. If something is good, say so. If something is wrong, describe it. Your authentic judgment is what matters.
 
-If a previous review exists, read it for context but form your own independent view. Agree or disagree based on your own reading of the artifact."
+If previous reviews exist, read them for context but form your own independent view. Agree or disagree based on your own reading of the artifact.
+
+**Prior reviews:** Check \`reviews/$REVIEW_CATEGORY/\` for any existing reviews of this artifact.
+**Structural non-compliance** (missing mandatory schema sections) is a P0 blocking issue, regardless of content quality."
 fi
 
 # Write active role assignment to project
@@ -156,13 +169,13 @@ mkdir -p "$PROJECT_DIR/.workflow"
 cat > "$PROJECT_DIR/.workflow/active-role.md" << EOF
 # Workflow Assignment
 
+**Directive:** Perform the $ROLE task on the artifact below. Read the role file and preamble, then act — produce the output artifact directly.
+
 **Role:** $ROLE
 **Role file:** ~/deploy/dev-workflow/roles/$ROLE.md
 $([ -n "$ARTIFACT" ] && echo "**Artifact:** $ARTIFACT")
 $([ -n "$SCHEMA" ] && echo "**Schema:** ~/deploy/dev-workflow/schemas/ — $SCHEMA")
-
-Read the role file and preamble, then begin.
-$REVIEW_FRAMING
+$ROLE_FRAMING
 EOF
 
 echo "Launching $ROLE in $HARNESS (project: $(basename "$PROJECT_DIR"))"
