@@ -32,6 +32,8 @@ This is a parameterized role. The same review process applies to all artifact ty
 
 Verify all required sections present per schema. Flag missing sections, placeholder text ("[TODO]", "TBD"), and sections that are too thin (<2 sentences for docs, missing types for code).
 
+**Context matters:** Some schema sections may not apply to every project (e.g., Stakeholder Agreement for a solo developer). A section present but marked as not applicable ("Solo developer, no external approvals") is fine. A section missing entirely should be flagged — but weigh severity against project context. A missing Stakeholder Agreement in an 8-person team is P0; in a solo prototype, it's P1 at most.
+
 ### 3. Quality Assessment
 
 Apply the per-artifact evaluation criteria (see below). For each section, assess:
