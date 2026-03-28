@@ -140,6 +140,15 @@ case "$ROLE" in
     spec-writer) SCHEMA="spec" ;;
 esac
 
+# Build critical review framing for reviewer roles
+REVIEW_FRAMING=""
+if [[ "$ROLE" == *reviewer* ]]; then
+    REVIEW_FRAMING="
+## Review expectations
+
+You are expected to find issues. Your value comes from catching what others missed, not from confirming prior reviews. If a previous review exists, read it but form your own independent judgment — disagree with it if warranted. Be direct and specific about problems. Do not soften findings to be polite. A review that finds nothing wrong is suspicious — push harder."
+fi
+
 # Write active role assignment to project
 mkdir -p "$PROJECT_DIR/.workflow"
 cat > "$PROJECT_DIR/.workflow/active-role.md" << EOF
@@ -151,12 +160,39 @@ $([ -n "$ARTIFACT" ] && echo "**Artifact:** $ARTIFACT")
 $([ -n "$SCHEMA" ] && echo "**Schema:** ~/deploy/dev-workflow/schemas/ — $SCHEMA")
 
 Read the role file and preamble, then begin.
+$REVIEW_FRAMING
 EOF
 
 echo "Launching $ROLE in $HARNESS (project: $(basename "$PROJECT_DIR"))"
 [ -n "$ARTIFACT" ] && echo "  Artifact: $ARTIFACT"
 echo ""
 
+# Build harness-specific flags and prep
+HARNESS_FLAGS=()
+case "$HARNESS" in
+    gemini)
+        # Gemini sandbox restricts to project dir — whitelist the deploy tree
+        HARNESS_FLAGS+=(--include-directories "$HOME/deploy/dev-workflow")
+        ;;
+    opencode)
+        # OpenCode snapshots the project dir — copy essential workflow files in
+        CONTEXT_DIR="$PROJECT_DIR/.workflow/context"
+        mkdir -p "$CONTEXT_DIR"
+        cp "$DEPLOY_DIR/roles/$ROLE.md" "$CONTEXT_DIR/role.md"
+        cp "$DEPLOY_DIR/preamble.md" "$CONTEXT_DIR/preamble.md"
+        cp "$DEPLOY_DIR/ontology.md" "$CONTEXT_DIR/ontology.md"
+        [ -n "$SCHEMA" ] && {
+            # Copy referenced schemas (extract first word before any parenthetical)
+            for s in $(echo "$SCHEMA" | tr ',' '\n' | sed 's/ (.*//' | tr -d ' '); do
+                [ -f "$DEPLOY_DIR/schemas/$s.md" ] && cp "$DEPLOY_DIR/schemas/$s.md" "$CONTEXT_DIR/"
+            done
+        }
+        # Update active-role.md to point to local copies
+        sed -i 's|~/deploy/dev-workflow/roles/|.workflow/context/|' "$PROJECT_DIR/.workflow/active-role.md"
+        sed -i 's|~/deploy/dev-workflow/|.workflow/context/|' "$PROJECT_DIR/.workflow/active-role.md"
+        ;;
+esac
+
 # Launch via role script
 export HARNESS
-exec "$HOME/bin/role" workflow "$PROJECT_DIR" "$@"
+exec "$HOME/bin/role" workflow "$PROJECT_DIR" "${HARNESS_FLAGS[@]}" "$@"
