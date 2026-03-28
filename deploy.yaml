@@ -1,0 +1,17 @@
+runtime: none
+
+copy:
+  - ontology.md
+  - preamble.md
+  - model-config.json
+  - schemas/
+  - roles/
+  - templates/
+
+files:
+  /home/claude/.claude/skills/workflow-init/SKILL.md: skills/workflow-init/SKILL.md
+  /home/claude/.claude/skills/workflow-status/SKILL.md: skills/workflow-status/SKILL.md
+  /home/claude/.claude/skills/workflow-spec/SKILL.md: skills/workflow-spec/SKILL.md
+  /home/claude/.claude/skills/workflow-review/SKILL.md: skills/workflow-review/SKILL.md
+  /home/claude/.claude/skills/workflow-build/SKILL.md: skills/workflow-build/SKILL.md
+  /home/claude/.claude/skills/workflow-plan/SKILL.md: skills/workflow-plan/SKILL.md
