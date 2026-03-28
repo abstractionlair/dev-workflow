@@ -86,13 +86,10 @@ role_cfg = cfg.get('roles', {}).get('$ROLE', {})
 print(role_cfg.get('tool', 'claude'))
 " 2>/dev/null || echo "claude")
 
-    # Map tool names to harness names
+    # tool names in config map directly to harness names
     case "$TOOL" in
-        claude) HARNESS="claude" ;;
-        codex)  HARNESS="opencode" ;;
-        gemini) HARNESS="gemini" ;;
-        opencode) HARNESS="opencode" ;;
-        *)      HARNESS="claude" ;;
+        claude|gemini|opencode) HARNESS="$TOOL" ;;
+        *) HARNESS="claude" ;;
     esac
 fi
 

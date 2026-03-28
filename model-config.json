@@ -1,51 +1,47 @@
 {
-  "description": "Maps workflow roles to preferred models and harnesses. These are defaults — override in the moment by choosing a different terminal.",
+  "description": "Maps workflow roles to preferred models and harnesses. These are defaults — override with HARNESS=... or by choosing a different terminal.",
   "roles": {
     "planning-helper": {
       "tool": "claude",
-      "model": "claude-sonnet-4-5",
+      "model": "sonnet",
       "notes": "Socratic dialogue benefits from conversational fluency"
     },
     "planning-writer": {
       "tool": "claude",
-      "model": "claude-sonnet-4-5"
+      "model": "sonnet"
     },
     "spec-helper": {
       "tool": "claude",
-      "model": "claude-sonnet-4-5",
+      "model": "sonnet",
       "notes": "Interface design benefits from broad context"
     },
     "spec-writer": {
       "tool": "claude",
-      "model": "claude-sonnet-4-5"
+      "model": "sonnet"
     },
     "reviewer": {
-      "tool": "codex",
-      "model": "gpt-5",
-      "reasoning_effort": "high",
+      "tool": "opencode",
+      "model": "opencode/gpt-5.4",
+      "variant": "high",
       "notes": "Cross-model review catches blind spots. Use a different model than the writer."
     },
     "skeleton-writer": {
       "tool": "claude",
-      "model": "claude-sonnet-4-5"
+      "model": "sonnet"
     },
     "test-writer": {
       "tool": "claude",
-      "model": "claude-sonnet-4-5"
+      "model": "sonnet"
     },
     "implementer": {
       "tool": "claude",
-      "model": "claude-sonnet-4-5"
+      "model": "sonnet"
     }
   },
   "tools": {
     "claude": {
       "cli": "claude",
       "entry_point": "CLAUDE.md"
-    },
-    "codex": {
-      "cli": "codex",
-      "entry_point": "AGENTS.md"
     },
     "gemini": {
       "cli": "gemini",
