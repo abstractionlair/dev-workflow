@@ -1,0 +1,143 @@
+#!/bin/bash
+# Launch an interactive workflow role session in the appropriate harness.
+#
+# Usage:
+#   workflow-role <role> [project-dir] [artifact-path] [-- harness-args...]
+#   workflow-role reviewer ~/projects/work-graph docs/VISION.md
+#   workflow-role spec-helper ~/projects/work-graph
+#   workflow-role spec-writer work-graph
+#   HARNESS=gemini workflow-role reviewer ~/projects/work-graph docs/VISION.md
+#
+# Roles: reviewer, spec-helper, spec-writer, planning-helper, planning-writer,
+#        skeleton-writer, test-writer, implementer
+#
+# If HARNESS is not set, reads the preferred harness from model-config.json.
+# Override with HARNESS=claude|gemini|opencode.
+
+set -e
+
+DEPLOY_DIR="$HOME/deploy/dev-workflow"
+CONFIG="$DEPLOY_DIR/model-config.json"
+
+if [ -z "$1" ]; then
+    echo "Usage: workflow-role <role> [project-dir] [artifact-path] [-- harness-args...]"
+    echo ""
+    echo "Roles:"
+    for f in "$DEPLOY_DIR"/roles/*.md; do
+        basename "$f" .md
+    done
+    echo ""
+    echo "Override harness: HARNESS=claude|gemini|opencode workflow-role <role> ..."
+    exit 1
+fi
+
+ROLE="$1"
+shift
+
+# Validate role exists
+if [ ! -f "$DEPLOY_DIR/roles/$ROLE.md" ]; then
+    echo "Error: unknown role '$ROLE'"
+    echo "Available roles:"
+    for f in "$DEPLOY_DIR"/roles/*.md; do
+        echo "  $(basename "$f" .md)"
+    done
+    exit 1
+fi
+
+# Parse project directory
+PROJECT_DIR=""
+if [ $# -gt 0 ] && [[ "$1" != -* ]] && [[ "$1" != "--" ]]; then
+    if [ -d "$1" ]; then
+        PROJECT_DIR="$1"
+        shift
+    elif [ -d "$HOME/projects/$1" ]; then
+        PROJECT_DIR="$HOME/projects/$1"
+        shift
+    else
+        echo "Error: project directory not found: $1"
+        exit 1
+    fi
+fi
+
+if [ -z "$PROJECT_DIR" ]; then
+    PROJECT_DIR="$(pwd)"
+fi
+
+# Parse optional artifact path (relative to project)
+ARTIFACT=""
+if [ $# -gt 0 ] && [[ "$1" != -* ]] && [[ "$1" != "--" ]]; then
+    ARTIFACT="$1"
+    shift
+fi
+
+# Skip -- separator if present
+if [ "${1:-}" = "--" ]; then
+    shift
+fi
+
+# Determine harness: explicit HARNESS env var > model-config.json
+if [ -z "${HARNESS:-}" ] && [ -f "$CONFIG" ]; then
+    # Read preferred tool from model-config.json
+    TOOL=$(python3 -c "
+import json, sys
+with open('$CONFIG') as f:
+    cfg = json.load(f)
+role_cfg = cfg.get('roles', {}).get('$ROLE', {})
+print(role_cfg.get('tool', 'claude'))
+" 2>/dev/null || echo "claude")
+
+    # Map tool names to harness names
+    case "$TOOL" in
+        claude) HARNESS="claude" ;;
+        codex)  HARNESS="opencode" ;;
+        gemini) HARNESS="gemini" ;;
+        opencode) HARNESS="opencode" ;;
+        *)      HARNESS="claude" ;;
+    esac
+fi
+
+HARNESS="${HARNESS:-claude}"
+
+# Determine schema based on role and artifact
+SCHEMA=""
+case "$ROLE" in
+    reviewer)
+        # Infer schema from artifact path
+        if [[ "$ARTIFACT" == docs/VISION* ]]; then SCHEMA="vision"
+        elif [[ "$ARTIFACT" == docs/SCOPE* ]]; then SCHEMA="scope"
+        elif [[ "$ARTIFACT" == docs/ROADMAP* ]]; then SCHEMA="roadmap"
+        elif [[ "$ARTIFACT" == specs/* ]]; then SCHEMA="spec"
+        elif [[ "$ARTIFACT" == bugs/* ]]; then SCHEMA="bug-report"
+        fi
+        # Also need review schema for output format
+        [ -n "$SCHEMA" ] && SCHEMA="$SCHEMA (artifact), review (output format)"
+        ;;
+    planning-helper|planning-writer)
+        if [[ "$ARTIFACT" == *VISION* ]]; then SCHEMA="vision"
+        elif [[ "$ARTIFACT" == *SCOPE* ]]; then SCHEMA="scope"
+        elif [[ "$ARTIFACT" == *ROADMAP* ]]; then SCHEMA="roadmap"
+        fi
+        ;;
+    spec-helper|spec-writer) SCHEMA="spec" ;;
+esac
+
+# Write active role assignment to project
+mkdir -p "$PROJECT_DIR/.workflow"
+cat > "$PROJECT_DIR/.workflow/active-role.md" << EOF
+# Workflow Assignment
+
+**Role:** $ROLE
+**Role file:** ~/deploy/dev-workflow/roles/$ROLE.md
+$([ -n "$ARTIFACT" ] && echo "**Artifact:** $ARTIFACT")
+$([ -n "$SCHEMA" ] && echo "**Schema:** ~/deploy/dev-workflow/schemas/ — $SCHEMA")
+
+Read the role file and preamble, then begin.
+EOF
+
+echo "Launching $ROLE in $HARNESS (project: $(basename "$PROJECT_DIR"))"
+[ -n "$ARTIFACT" ] && echo "  Artifact: $ARTIFACT"
+echo ""
+
+# Launch via role script
+export HARNESS
+exec "$HOME/bin/role" workflow "$PROJECT_DIR" "$@"

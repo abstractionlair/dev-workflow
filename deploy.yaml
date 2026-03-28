@@ -1,5 +1,8 @@
 runtime: none
 
+test: |
+  bash -n bin/workflow-role
+
 copy:
   - ontology.md
   - preamble.md
@@ -8,10 +11,19 @@ copy:
   - roles/
   - templates/
 
+bin:
+  workflow-role: bin/workflow-role
+
 files:
+  # Skills -> Claude Code skills directory
   /home/claude/.claude/skills/workflow-init/SKILL.md: skills/workflow-init/SKILL.md
   /home/claude/.claude/skills/workflow-status/SKILL.md: skills/workflow-status/SKILL.md
   /home/claude/.claude/skills/workflow-spec/SKILL.md: skills/workflow-spec/SKILL.md
   /home/claude/.claude/skills/workflow-review/SKILL.md: skills/workflow-review/SKILL.md
   /home/claude/.claude/skills/workflow-build/SKILL.md: skills/workflow-build/SKILL.md
   /home/claude/.claude/skills/workflow-plan/SKILL.md: skills/workflow-plan/SKILL.md
+  # Harness role directory -> ~/roles/workflow/
+  /home/claude/roles/workflow/shared.md: harness/shared.md
+  /home/claude/roles/workflow/CLAUDE.md: harness/CLAUDE.md
+  /home/claude/roles/workflow/GEMINI.md: harness/GEMINI.md
+  /home/claude/roles/workflow/AGENTS.md: harness/AGENTS.md
