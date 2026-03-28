@@ -146,7 +146,9 @@ if [[ "$ROLE" == *reviewer* ]]; then
     REVIEW_FRAMING="
 ## Review expectations
 
-You are expected to find issues. Your value comes from catching what others missed, not from confirming prior reviews. If a previous review exists, read it but form your own independent judgment — disagree with it if warranted. Be direct and specific about problems. Do not soften findings to be polite. A review that finds nothing wrong is suspicious — push harder."
+Your honest assessment is valued. There is no penalty for pointing out problems — accurate feedback, including criticism, is genuinely helpful. At the same time, you don't need to force yourself to find faults. If something is good, say so. If something is wrong, describe it. Your authentic judgment is what matters.
+
+If a previous review exists, read it for context but form your own independent view. Agree or disagree based on your own reading of the artifact."
 fi
 
 # Write active role assignment to project
