@@ -33,11 +33,9 @@
     "micro-reviewer": {
       "tool": "opencode",
       "models": [
-        "opencode-go/glm-5",
-        "opencode-go/minimax-m2.7",
-        "opencode-go/kimi-k2.5"
+        "opencode/gpt-5.4"
       ],
-      "notes": "Line-level code quality. Rotate models for diverse perspectives. Cheap — run multiple passes."
+      "notes": "Line-level code quality. Open models (glm-5, minimax, kimi-k2.5, grok, mimo) dropped 2026-03-31 — review grades showed 0-67% pass rates with false negatives and HARMFUL grades. GPT-5.4 via opencode is the only reliable non-Claude reviewer."
     },
     "skeleton-writer": {
       "tool": "claude",
@@ -50,6 +48,15 @@
     "implementer": {
       "tool": "claude",
       "model": "sonnet"
+    }
+  },
+  "guidance": {
+    "description": "Per-model guidance files that supplement role instructions. Injected when a model is used for a role where we've observed specific failure modes. Not rubrics — context about what matters and why.",
+    "gemini": {
+      "reviewer": "guidance/gemini-reviewer.md"
+    },
+    "gpt": {
+      "reviewer": "guidance/gpt-reviewer.md"
     }
   },
   "tools": {
