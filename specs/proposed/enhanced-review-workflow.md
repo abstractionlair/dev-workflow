@@ -73,9 +73,9 @@ The `tools` section adds:
 }
 ```
 
-### Environment
+### Authentication
 
-Codex needs `OPENAI_API_KEY`. Use `vault exec openai -- codex exec ...` or ensure the review orchestrator sources it.
+All three CLIs use subscription credentials stored locally (not API keys). No vault integration or environment variables needed for the CLI invocations themselves.
 
 ## 2. Peer-Disagreement Protocol
 
@@ -93,7 +93,7 @@ The synthesizer does NOT challenge findings based on its own opinion. It stays n
 
 ### The follow-up
 
-For each identified contradiction, the synthesizer resumes both reviewers' sessions:
+For each identified contradiction, the synthesizer resumes the sessions of the reviewers involved (typically two, but could be more if multiple reviewers took conflicting positions):
 
 ```
 This is the review synthesizer following up. Reviewer [model] assessed
@@ -114,7 +114,7 @@ The synthesizer identifies itself as "the review synthesizer," not by model name
 
 The synthesizer weighs the follow-up responses:
 - If a reviewer concedes, the contradiction is resolved
-- If both defend with evidence, the synthesizer records both positions and the evidence in the synthesis, and flags the item for human attention
+- If all parties defend with evidence, the synthesizer records all positions and the evidence in the synthesis, and flags the item for human attention
 - If a reviewer can't provide evidence for their position, that weakens their finding
 
 ### Session management
@@ -158,10 +158,12 @@ ALTER TABLE review_grades
 
 #### Grading process
 
-1. Synthesis completes, producing merged findings
-2. Each reviewer model is given all reviews and the merged findings in a fresh session
+1. Synthesis completes, producing merged findings — these are delivered to the review requester immediately
+2. Asynchronously (the review requester does not wait): each reviewer model is given all reviews and the merged findings in a fresh session
 3. Each grades every review (including its own) on the standard scale, with failure_mode
 4. All grades are stored with `grader_model` populated
+
+Grading is decoupled from the review cycle. It feeds the optimization loop, not the current review.
 
 #### Grading prompt structure
 
@@ -213,9 +215,8 @@ Results inform updates to per-model guidance files (`guidance/gemini-reviewer.md
 
 ### Codex switch
 1. GPT reviews use `codex exec` instead of `opencode`
-2. Session IDs are captured from `--json` output for all CLI invocations
-3. `OPENAI_API_KEY` is sourced from vault, not environment
-4. model-config.json and workflow-review skill updated
+2. Session IDs are captured from JSON output for all CLI invocations
+3. model-config.json and workflow-review skill updated
 
 ### Peer-disagreement protocol
 5. Synthesizer identifies inter-reviewer contradictions before final synthesis
@@ -233,9 +234,8 @@ Results inform updates to per-model guidance files (`guidance/gemini-reviewer.md
 ## Implementation Notes
 
 - The peer-disagreement protocol adds latency to the review cycle (additional round-trips). This is acceptable — review quality matters more than review speed.
-- Cross-grading is async — it can run after the synthesis is delivered and the developer has moved on. Grades feed the optimization loop, not the current review cycle.
-- The `codex` CLI requires `OPENAI_API_KEY` in the environment. The review orchestrator should use `vault exec openai -- ...` for this.
-- Gemini reviews need `GEMINI_API_KEY` via `vault exec google -- ...`.
+- Cross-grading is fully async — runs after synthesis is delivered. The review requester moves on immediately.
+- All three CLIs authenticate via locally stored subscription credentials — no API keys or vault integration needed for invocation.
 - The peer-disagreement follow-up prompt should not reveal which model produced which review. Present findings neutrally to avoid model-identity bias.
 
 ## Out of Scope
