@@ -96,7 +96,7 @@ For each reviewer model, launch via `workflow-role` and capture the session ID f
 # Claude (this session does its own review — steps 1-7 above)
 
 # Codex/GPT — capture session ID from JSONL output
-codex exec -m gpt-5.4 --sandbox read-only --full-auto --skip-git-repo-check --json \
+codex exec -m gpt-5.4 --sandbox read-only --skip-git-repo-check --json \
   "$(cat .workflow/active-role.md)" 2>/dev/null | tee /tmp/review-codex.jsonl
 CODEX_SESSION=$(extract-session-id codex < /tmp/review-codex.jsonl)
 
