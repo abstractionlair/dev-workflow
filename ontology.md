@@ -133,8 +133,8 @@ Strategic docs don't move between directories. They're versioned in place:
 |------|-------|---------|-------|-----------------|
 | Planner | Strategic | Vision, Scope, Roadmap | -- | claude |
 | Spec Writer | Design | Specs | -- | claude |
-| Macro Reviewer | Quality | Reviews | All state transitions | gemini (docs), opencode/gpt-5.4 (code) |
-| Micro Reviewer | Quality | Reviews | -- (advisory only) | opencode (open models) |
+| Macro Reviewer | Quality | Reviews | All state transitions | gemini (docs), codex/gpt-5.4 (code) |
+| Micro Reviewer | Quality | Reviews | -- (advisory only) | codex/gpt-5.4 |
 | Skeleton Writer | Code | Interfaces, types | -- | claude |
 | Test Writer | Code | Test suites (RED) | -- | claude |
 | Implementer | Code | Working code (GREEN) | -- | claude |
@@ -147,6 +147,6 @@ Strategic docs don't move between directories. They're versioned in place:
 | Scope | planner | gemini | -- |
 | Roadmap | planner | gemini | -- |
 | Spec | spec-writer | gemini | -- |
-| Skeleton | skeleton-writer | opencode/gpt-5.4 | opencode/open model |
-| Tests | test-writer | opencode/gpt-5.4 | opencode/open model |
-| Implementation | implementer | opencode/gpt-5.4 | opencode/open model |
+| Skeleton | skeleton-writer | codex/gpt-5.4 | codex/gpt-5.4 |
+| Tests | test-writer | codex/gpt-5.4 | codex/gpt-5.4 |
+| Implementation | implementer | codex/gpt-5.4 | codex/gpt-5.4 |

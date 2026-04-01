@@ -15,27 +15,27 @@
         "scope": "gemini",
         "roadmap": "gemini",
         "spec": "gemini",
-        "skeleton": "opencode",
-        "tests": "opencode",
-        "implementation": "opencode"
+        "skeleton": "codex",
+        "tests": "codex",
+        "implementation": "codex"
       },
       "model_by_artifact": {
         "vision": "gemini-3.1-pro-preview",
         "scope": "gemini-3.1-pro-preview",
         "roadmap": "gemini-3.1-pro-preview",
         "spec": "gemini-3.1-pro-preview",
-        "skeleton": "opencode/gpt-5.4",
-        "tests": "opencode/gpt-5.4",
-        "implementation": "opencode/gpt-5.4"
+        "skeleton": "codex/gpt-5.4",
+        "tests": "codex/gpt-5.4",
+        "implementation": "codex/gpt-5.4"
       },
       "notes": "Big picture: design quality for docs (gemini), spec fidelity for code (gpt-5.4). GPT excluded from design processes."
     },
     "micro-reviewer": {
-      "tool": "opencode",
+      "tool": "codex",
       "models": [
-        "opencode/gpt-5.4"
+        "codex/gpt-5.4"
       ],
-      "notes": "Line-level code quality. Open models (glm-5, minimax, kimi-k2.5, grok, mimo) dropped 2026-03-31 — review grades showed 0-67% pass rates with false negatives and HARMFUL grades. GPT-5.4 via opencode is the only reliable non-Claude reviewer."
+      "notes": "Line-level code quality. Open models (glm-5, minimax, kimi-k2.5, grok, mimo) dropped 2026-03-31 — review grades showed 0-67% pass rates with false negatives and HARMFUL grades. GPT-5.4 via codex is the only reliable non-Claude reviewer."
     },
     "skeleton-writer": {
       "tool": "claude",
@@ -68,8 +68,8 @@
       "cli": "gemini",
       "entry_point": "GEMINI.md"
     },
-    "opencode": {
-      "cli": "opencode",
+    "codex": {
+      "cli": "codex",
       "entry_point": "AGENTS.md"
     }
   }

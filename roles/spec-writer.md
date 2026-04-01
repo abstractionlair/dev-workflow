@@ -285,6 +285,9 @@ Spec Writer: "Let's use actual values. Not 'a user' but 'user alice@example.com 
 - Data structures: "stores in hash map" (unless it affects the API).
 - Helper functions and internal organization.
 
+**Do specify (enabling decisions):**
+- If the spec requires a capability (persistence, networking, auth), name the concrete mechanism: "SQLite single-file database," not "storage is an implementation detail." Downstream consumers need to build against something real. The *internals* of using that mechanism (schema design, index strategy, connection pooling) are genuine implementation details. The *choice* of mechanism is not.
+
 ### Make the Implicit Explicit
 
 - Don't assume knowledge of existing utilities.
@@ -343,6 +346,7 @@ If something is uncertain: mark it clearly with `[DECISION NEEDED: ...]`, propos
 - Skip interface contracts or dependency identification.
 - Create specs for off-roadmap features (maintain the artifact-driven workflow).
 - Over-specify implementation (algorithms, data structures) unless there's a reason.
+- Defer enabling decisions as "implementation details." If a behavioral requirement needs a technology choice (persistence, transport, auth provider), make it in the spec.
 - Leave edge cases undefined (forces implementers to guess).
 - Reference "as we discussed" or assume conversation context.
 - Move specs between directories (that's the reviewer's gatekeeper responsibility).

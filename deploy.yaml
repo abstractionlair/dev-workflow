@@ -2,6 +2,7 @@ runtime: none
 
 test: |
   bash -n bin/workflow-role
+  bash -n bin/extract-session-id
 
 copy:
   - ontology.md
@@ -10,9 +11,11 @@ copy:
   - schemas/
   - roles/
   - templates/
+  - guidance/
 
 bin:
   workflow-role: bin/workflow-role
+  extract-session-id: bin/extract-session-id
 
 files:
   # Skills -> Claude Code skills directory

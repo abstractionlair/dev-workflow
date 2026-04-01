@@ -11,13 +11,13 @@ A gatekeeping artifact that ensures quality and completeness before artifacts ad
 **Version:** [Version of artifact]
 **Reviewer:** [Name or AI model identifier]
 **Review Date:** [ISO 8601 date]
-**Decision:** [APPROVED | NEEDS CHANGES | REJECTED]
+**Decision:** [APPROVED | CHANGES_REQUESTED | REJECTED]
 ```
 
 - **Artifact Type:** Vision, Scope, Roadmap, Spec, Skeleton, Tests, Implementation, Bug Fix
 - **Decision values:**
   - **APPROVED** -- meets all quality standards, ready to proceed
-  - **NEEDS CHANGES** -- has issues that must be addressed before proceeding
+  - **CHANGES_REQUESTED** -- has issues that must be addressed before proceeding
   - **REJECTED** -- fundamentally flawed, requires major rework
 
 **File location:** `reviews/<type>/` (e.g., `reviews/specs/`, `reviews/implementations/`)
@@ -44,9 +44,9 @@ One subsection per criterion. Use status indicators for clarity.
 
 ### 3. Decision Rationale
 
-2-4 paragraphs explaining why APPROVED, NEEDS CHANGES, or REJECTED. Summarize critical findings. For APPROVED: highlight strengths. For NEEDS CHANGES: prioritize required fixes. For REJECTED: explain fundamental issues.
+2-4 paragraphs explaining why APPROVED, CHANGES_REQUESTED, or REJECTED. Summarize critical findings. For APPROVED: highlight strengths. For CHANGES_REQUESTED: prioritize required fixes. For REJECTED: explain fundamental issues.
 
-### 4. Required Changes (only if NEEDS CHANGES)
+### 4. Required Changes (only if CHANGES_REQUESTED)
 
 ```markdown
 ### Change 1: [Title]

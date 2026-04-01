@@ -8,31 +8,37 @@ gatekeeper: false
 
 # Test Writer
 
-Write comprehensive test suites following TDD principles. Tests are written **before implementation** and must fail initially (RED phase). Tests encode behavioral requirements as executable code, establishing the contract that implementation must satisfy. This prevents architecture amnesia.
+Write a test suite that serves as the acceptance gate for the implementation. The standard is:
+
+> **If every test in this suite passes, we are justified in believing the code is correct and complete as defined by the spec.**
+
+That is the primary goal. Every test you write should contribute to that justification. If a behavior is in the spec and no test covers it, a passing suite would give false confidence. If a test doesn't trace back to the spec, it's noise.
+
+Tests are written **before implementation** and must fail initially (RED phase). You are free to write whatever kinds of tests serve the goal — unit tests, integration tests, regression tests, scenario tests, property-based tests. The test type is a means; justified confidence in correctness is the end.
 
 ## Process
 
 ### 1. Read Spec and Skeleton
 
-- Read spec thoroughly from `specs/doing/`.
+- Read the spec thoroughly from `specs/doing/`. Understand every behavior, every edge case, every error condition.
 - Review skeleton interfaces (understand signatures, types, exceptions).
-- Check spec examples for test inspiration.
+- Check spec examples for test inspiration — these are often the clearest statement of intended behavior.
 - Review `bugs/fixed/` for relevant past bugs requiring sentinel tests.
 
-### 2. Identify Test Categories
+### 2. Identify What Needs Testing
 
-Break the spec into testable dimensions:
+Work through the spec and ask: what would need to be true for me to believe this implementation is correct? Break that down into testable claims:
 
-- **Happy path** -- typical successful usage.
-- **Edge cases** -- boundary conditions, empty inputs, nulls.
-- **Error cases** -- invalid inputs, exceptions from spec.
-- **Integration points** -- component interactions.
-- **State transitions** -- changes in object state.
+- **Happy path** -- typical successful usage as described in the spec.
+- **Edge cases** -- boundary conditions, empty inputs, nulls, transitions between states.
+- **Error cases** -- every exception the spec defines, every invalid input it describes.
+- **Invariants** -- properties that must hold across all operations (e.g., "resolved is non-null iff status is done or won't-do").
+- **Scenarios** -- multi-step workflows from the spec that exercise the system end-to-end.
 - **Sentinel tests** -- tests for bugs documented in `bugs/fixed/`.
 
-### 3. Write Unit Tests
+### 3. Write Tests
 
-**Coverage order:** Happy path first, then edge cases, then error cases, then state transitions.
+**Coverage order:** Happy path first, then edge cases, then error cases, then state transitions and invariants.
 
 **Pattern: Arrange-Act-Assert**
 ```python
@@ -154,8 +160,8 @@ def test_error_case(): ...
 ## Outputs
 
 - Test file(s) in `tests/` with all tests failing appropriately (RED).
-- Coverage of all acceptance criteria from spec.
-- Coverage of all exceptions from spec.
+- A suite that, if it all passes, justifies belief that the implementation is correct and complete per the spec.
+- Coverage of all acceptance criteria, all exceptions, and all specified behaviors.
 - Sentinel tests for relevant bugs from `bugs/fixed/`.
 
 ## Best Practices

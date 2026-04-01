@@ -259,6 +259,8 @@ Every custom type must be defined with structure, invariants, and a concrete exa
 
 Guidance, not requirements. Suggested approaches, performance tips, error handling patterns. Implementation is free to differ.
 
+**Important:** "Implementation detail" means the spec leaves a choice to the implementer. This is appropriate for internal organization (algorithms, helper structure, index strategies). It is NOT appropriate for **enabling decisions** — technical choices required to fulfill a behavioral requirement. If the spec says "data survives restart," the persistence mechanism (SQLite, Postgres, file-based) is an enabling decision, not an implementation detail. It should be specified here or in Technical Constraints, so downstream consumers (skeleton-writer, test-writer, implementer) can build against a concrete capability rather than an abstraction with no implementation.
+
 ### 12. Open Questions
 
 ```markdown
@@ -287,6 +289,8 @@ Required links: ROADMAP.md (source feature), VISION.md (strategic context), SCOP
 **Missing error conditions:** Only happy path specified -- add Error Handling section with 3-7 error criteria.
 
 **Implementation in interface contract:** Specifies algorithms or data structures -- describe behavior (inputs/outputs/errors) not implementation.
+
+**Deferred enabling decisions:** Spec requires a capability (e.g., "data persists across restart") but labels the mechanism "an implementation detail." If a behavioral requirement depends on a technical choice, that choice must be made at spec time — otherwise skeleton, tests, and implementation each guess independently.
 
 **Coupled acceptance criteria:** "System creates user AND sends email AND logs event" -- split into independent criteria.
 

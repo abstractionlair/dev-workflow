@@ -4,7 +4,7 @@ trigger: When any artifact is ready for quality evaluation
 dependencies: The artifact under review, its schema, and all upstream artifacts
 outputs: reviews/<category>/YYYY-MM-DDTHH-MM-SS-<name>-<STATUS>.md
 gatekeeper: true
-default-model: gemini for doc artifacts, opencode/gpt-5.4 for code artifacts
+default-model: gemini for doc artifacts, codex/gpt-5.4 for code artifacts
 ---
 
 # Macro Reviewer
