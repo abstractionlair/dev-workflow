@@ -38,11 +38,11 @@ Done as of 2026-05-10 — README.md now has a History section naming both predec
 
 ## Planned: three explicit aims for reviews and tests
 
-Captured 2026-05-10 just before Scott went offline. The intent is to make reviews and tests address three distinct aims, in parallel — possibly as explicit steps within each. Both reviewer role files and test-writer role file should incorporate this. WORKFLOW.md should be updated to match.
+Captured 2026-05-10 just before the coordinator went offline. The intent is to make reviews and tests address three distinct aims, in parallel — possibly as explicit steps within each. Both reviewer role files and test-writer role file should incorporate this. WORKFLOW.md should be updated to match.
 
 **Aim 1 — Did we build what we set out to build, and did we build it correctly?**
 
-System-level / end-to-end correctness. Explicit reviewer attention and explicit tests for each. Examples Scott gave:
+System-level / end-to-end correctness. Explicit reviewer attention and explicit tests for each. Examples the coordinator gave:
 
 - Did we actually write the new computation?
 - Do the right numbers come out for a good set of test inputs?
@@ -53,7 +53,7 @@ This is the highest-stakes aim: the feature does the thing the spec asked for, o
 
 **Aim 2 — What could go wrong?**
 
-Scott: "what could go wrong feels close. May even be it." Marked partly placeholder because he wasn't certain there wasn't a different concept he had forgotten.
+The coordinator: "what could go wrong feels close. May even be it." Marked partly placeholder because they weren't certain there wasn't a different concept they had forgotten.
 
 The aim covers failure modes, edge cases, error paths — what happens when inputs are bad, services are down, dependencies fail, assumptions are violated, the unexpected happens. The gap between "passes happy-path tests" and "is actually correct under realistic conditions."
 
@@ -65,7 +65,7 @@ Candidates from the original placeholder, in case the missing concept was distin
 
 **Aim 3 — Low-level, line-by-line.**
 
-Local correctness in the small. Examples Scott gave:
+Local correctness in the small. Examples the coordinator gave:
 
 - Off-by-one errors.
 - Edge cases.
@@ -75,7 +75,7 @@ Local correctness in the small. Examples Scott gave:
 
 **Possibly an additional aim — Code and architectural quality**
 
-Captured 2026-05-10 while Scott was travelling on a spotty connection. He said: "May not be number 2 but should be captured." Position unsettled — could be a fourth aim, could fold under one of the others, could be its own thing.
+Captured 2026-05-10 while the coordinator was travelling on a spotty connection. They said: "May not be number 2 but should be captured." Position unsettled — could be a fourth aim, could fold under one of the others, could be its own thing.
 
 The aim: overall code quality, plus architectural quality where applicable.
 
@@ -94,7 +94,7 @@ This is distinct from "what could go wrong" (which is about behavior under stres
 
 ## Planned: explicit "make it good" step in implementation
 
-Captured 2026-05-10 alongside the code-quality aim — Scott was reminded of advice he liked: when doing TDD or similar, there should be a step after "make it work" to "make it good."
+Captured 2026-05-10 alongside the code-quality aim — the coordinator was reminded of advice they liked: when doing TDD or similar, there should be a step after "make it work" to "make it good."
 
 The implementation phase should explicitly include a refactor step. Once tests pass, take the time to clean up structure, names, duplication, and any architectural awkwardness that surfaced while making it work. The classic Beck cadence: red → green → refactor.
 

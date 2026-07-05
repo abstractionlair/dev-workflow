@@ -4,7 +4,7 @@
 **Version:** 2.0
 **Status:** Draft
 **Created:** 2026-04-01
-**Author:** Scott + Claude (workbench session)
+**Author:** Workflow maintainer + Claude (workbench session)
 
 ## Overview
 

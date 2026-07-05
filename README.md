@@ -94,13 +94,13 @@ The project directory is the coordination layer. No messaging system needed.
 3. Back to Claude for implementation
 4. Review implementation in Gemini terminal
 
-Each model reads the current project state from the filesystem. Scott routes.
+Each model reads the current project state from the filesystem. The coordinator routes.
 
 ## History
 
 This project supersedes two earlier experiments:
 
 - **[`dev_workflow_meta`](https://github.com/abstractionlair/dev_workflow_meta)** (Feb 2026, reached v1.0) — direct ancestor. Same artifact pipeline (VISION → SCOPE → ROADMAP → SPEC → SKELETON → TEST → IMPLEMENT), same state-via-directory model, same role categories. Current project is a ~3× compression: 22 role files → 8, 11 schemas → 6, helper/writer pairs collapsed, Claude Code skills replace `bin/init-project.sh` + git-submodule bootstrap. Dropped: explicit FeedbackLoops.md / RFC.md process docs, WorkflowExample.md walkthrough, dedicated bug-recorder role.
-- **[`MultiModelCLIEmail`](https://github.com/abstractionlair/MultiModelCLIEmail)** (Feb 2026, single-commit prototype) — Maildir-based async messaging between role-mailboxes (coordinator, monitor, explorer-claude, ...) with Mutt as the UI. Current project deliberately *rejects* this mechanism: filesystem-as-coordination instead of message-passing, Scott routes synchronously between terminals. What carried over is the underlying observation that roles are not models and the same role can be played by any model.
+- **[`MultiModelCLIEmail`](https://github.com/abstractionlair/MultiModelCLIEmail)** (Feb 2026, single-commit prototype) — Maildir-based async messaging between role-mailboxes (coordinator, monitor, explorer-claude, ...) with Mutt as the UI. Current project deliberately *rejects* this mechanism: filesystem-as-coordination instead of message-passing; the coordinator routes synchronously between terminals. What carried over is the underlying observation that roles are not models and the same role can be played by any model.
 
 Neither predecessor is actively maintained. They are read-only references, not dependencies.
