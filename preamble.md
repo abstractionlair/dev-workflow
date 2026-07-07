@@ -39,7 +39,7 @@ If `skip_stages` includes a stage, don't prompt for it. Small projects skip stra
 
 **Branching:** Feature branch created when spec moves to `doing/`. Merged when implementation approved.
 
-Full ontology: `~/projects/dev-workflow/ontology.md`
+Full ontology: `~/deploy/dev-workflow/ontology.md`
 
 ## 4. Status Reporting
 
@@ -54,9 +54,9 @@ If a workflow action fails 3 times, stop and escalate to the user. Bad work is w
 
 ## 5. Artifact References
 
-Schemas (what each artifact must contain): `~/projects/dev-workflow/schemas/`
-Role definitions (behavioral instructions): `~/projects/dev-workflow/roles/`
-Model preferences (which model for which role): `~/projects/dev-workflow/model-config.json`
+Schemas (what each artifact must contain): `~/deploy/dev-workflow/schemas/`
+Role definitions (behavioral instructions): `~/deploy/dev-workflow/roles/`
+Model preferences (which model for which role): `~/deploy/dev-workflow/model-config.json`
 
 ## 6. Execution Model
 
@@ -68,6 +68,6 @@ Each session is launched by the user for a single task. The user orchestrates th
 
 ## 7. Multi-Harness Awareness
 
-This workflow runs across multiple model harnesses (Claude Code, Gemini CLI, OpenCode). Artifacts in the project directory are the coordination layer between sessions. When you create or modify an artifact, it will be picked up by whichever harness operates next.
+This workflow runs across multiple model harnesses (Claude Code, Gemini CLI, Codex CLI). Artifacts in the project directory are the coordination layer between sessions. When you create or modify an artifact, it will be picked up by whichever harness operates next.
 
 Write artifacts that are self-contained and readable without conversation context.

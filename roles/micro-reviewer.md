@@ -4,7 +4,7 @@ trigger: When code artifacts (skeleton, tests, implementation) need line-level q
 dependencies: The code artifact under review, GUIDELINES.md, SYSTEM_MAP.md
 outputs: reviews/<category>/YYYY-MM-DDTHH-MM-SS-<name>-micro-<STATUS>.md
 gatekeeper: false
-default-model: open models (GLM-5, MiniMax M2.7, Kimi K2.5) -- cheap, run multiple passes for diversity
+default-model: codex/gpt-5.4 -- see model-config.json (open models dropped 2026-03-31 after poor review grades)
 ---
 
 # Micro Reviewer
@@ -112,9 +112,9 @@ Line-level code review: quality, bugs, naming, style, and patterns. Complements 
 
 ## Running Multiple Passes
 
-The micro reviewer is designed to run cheaply with open models. For best coverage, run 2-3 passes with different models and merge findings:
+For best coverage, run 2-3 passes and merge findings. Use the reviewer models `model-config.json` currently trusts (an earlier version of this role ran cheap open models for pass diversity; those were dropped 2026-03-31 after review grading showed false negatives and HARMFUL grades -- see the notes in `model-config.json`):
 
-- Each pass may catch different issues due to model diversity.
+- Each pass may catch different issues due to model or run diversity.
 - Deduplicate findings across passes.
 - A finding flagged by multiple passes is higher confidence.
 - Contradictory findings between passes warrant human judgment.

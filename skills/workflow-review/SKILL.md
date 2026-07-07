@@ -191,7 +191,7 @@ After delivering the synthesis to the review requester, launch cross-grading **a
 >
 > [Include: each review text, the synthesis, and the artifact under review]
 
-**Store grades** in the `review_grades` table:
+**Store grades** in the `review_grades` table. Note: this table lives in external infrastructure (a Postgres instance maintained outside this repo) — the repo ships neither its schema nor migrations, so without an equivalent database of your own, skip grade storage:
 
 ```sql
 INSERT INTO review_grades (job_id, model_name, review_type, grade, note, grader_model, failure_mode, review_target, peer_disagreement)
