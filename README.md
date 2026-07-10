@@ -1,10 +1,21 @@
 # dev-workflow
 
-A structured AI-augmented development workflow. Importable into any project via Claude Code skills or directly via role files for other harnesses.
+## Background and Motivation
+
+I've written elsewhere about one aspect of the workflow I've ended up following trying to maximize the value provided by AI --- trying to benefit from a diversity of models and harnesses. This project describes, and implemnts, another aspect. Part of the benefit I think this part brings is independent of the diversity benefit and part of this workflow makes it easier to capture the diversity benefit.
+
+This is a formalish development process which resembles ones in use before we had meaningful AI help. That brings benefits from clear goals, scope discipline, good specs, following good review and test practices, ... all the usual stuff and independent of model and harness diversity. I'd note though that I've never found this kind of formality to deliver anything near what it's promised with human team. There, a little process and formality goes a long way. More was mostly a way to give some people a warm fuzzy feeling that they new what was going on and were in control. Usually false. _However_ it works really well with LLMs. At least today's LLMs. What works best, well, we probably haven't discovered best yet; what works well, keeps changing as models and harneses improve and change over time. And there's no sign of that stopping. I'd guess it's more likely to accelerate.
+
+Where this workflow supports the diversity focused parts of my workflow is in writing all the work out to files, each with a clear purpose and expectations. I can discuss a project's vision with Claude in a long conversation, interacting with the model as, using Anthropic's label, a thought partner, and then have it summarize into a vision document. Then I can have a different model review it, making use of a pre-existing description of what I want out of this kind of document. Then we iterate until its good. That pattern then repeats, step by step, as we work through the stages of getting a project done.
+
+In a sequence of iterations of the general idea, I tried different ways to automate different parts of this but I've steped back from that. Not because they didn't work. Much of it did work or at least showed promise. But I found I was spending the bulk of my time on the methodology and infrastructure than I did on "real" work. Not because it was needed, but because to me this kind of stuff is an attention attractor and sink.
+
+The details below about how it all work are largely written by Claude based on reading the files. It also had access to a lot of logs and "window files" [insert link] which record experience following the workflow. I don't think any of the latter factored into what's below. That's mostly "just the facts". But it could have.
 
 ## What this is
 
-A distilled process for spec-driven development with multi-model review gates:
+A structured AI-augmented development workflow. Importable into any project via Claude Code skills or directly via role files for other harnesses.
+Concretely, a distilled process for spec-driven development with multi-model review gates:
 
 ```
 Vision -> Scope -> Roadmap -> Spec -> Skeleton -> Tests -> Implementation
