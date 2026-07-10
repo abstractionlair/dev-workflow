@@ -28,14 +28,14 @@
         "tests": "codex/gpt-5.4",
         "implementation": "codex/gpt-5.4"
       },
-      "notes": "Big picture: design quality for docs (gemini), spec fidelity for code (gpt-5.4). GPT excluded from design processes."
+      "notes": "Big picture: design quality for docs, spec fidelity for code. MULTI-MODEL reviews go through the claude-hub review engine (python3 -m claude_hub.review_cli); its config/review_models.yaml is the authoritative reviewer roster \u2014 do not duplicate rosters here. The gemini tool_by_artifact entries are STALE: the standalone gemini CLI is retired (Antigravity/agy is not integrated with workflow-role); until that is resolved, run doc macro-reviews through the engine or override HARNESS explicitly."
     },
     "micro-reviewer": {
       "tool": "codex",
       "models": [
         "codex/gpt-5.4"
       ],
-      "notes": "Line-level code quality. Open models (glm-5, minimax, kimi-k2.5, grok, mimo) dropped 2026-03-31 — review grades showed 0-67% pass rates with false negatives and HARMFUL grades. GPT-5.4 via codex is the only reliable non-Claude reviewer."
+      "notes": "Line-level code quality. Historical: open models (glm-5, minimax, kimi-k2.5, grok, mimo) dropped 2026-03-31 \u2014 review grades showed 0-67% pass rates with false negatives and HARMFUL grades. Reviewer rosters now live in claude-hub config/review_models.yaml (authoritative); this file only picks the harness for single-model interactive role sessions."
     },
     "skeleton-writer": {
       "tool": "claude",
@@ -51,7 +51,7 @@
     }
   },
   "guidance": {
-    "description": "Per-model guidance files that supplement role instructions. Injected when a model is used for a role where we've observed specific failure modes. Not rubrics — context about what matters and why.",
+    "description": "Per-model guidance files that supplement role instructions. Injected when a model is used for a role where we've observed specific failure modes. Not rubrics \u2014 context about what matters and why.",
     "gemini": {
       "reviewer": "guidance/gemini-reviewer.md"
     },
