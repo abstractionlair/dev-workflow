@@ -25,6 +25,8 @@ Vision -> Scope -> Roadmap -> Spec -> Skeleton -> Tests -> Implementation
 
 Each stage produces a durable artifact. Reviewers gate advancement between stages. Different models can play different roles.
 
+For the review-independence discipline in practice, see `reviews/specs/` — the same spec independently reviewed by Claude, Gemini, and GPT-5.4 (2026-04-01); all three returned CHANGES_REQUESTED.
+
 ## What's in here
 
 ```
