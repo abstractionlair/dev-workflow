@@ -252,7 +252,9 @@ case "$HARNESS" in
         # copying needed — active-role.md already references ~/deploy/ paths.
         # Write AGENTS.md to project root to direct the model to active-role.md.
         if [ -f "$PROJECT_DIR/AGENTS.md" ]; then
-            cp "$PROJECT_DIR/AGENTS.md" "$PROJECT_DIR/.workflow/AGENTS.md.bak"
+            # -n: never clobber an existing backup, so a second launch cannot
+            # overwrite the real AGENTS.md that the first launch saved here.
+            cp -n "$PROJECT_DIR/AGENTS.md" "$PROJECT_DIR/.workflow/AGENTS.md.bak"
         fi
         cp "$DEPLOY_DIR/harness/AGENTS.md" "$PROJECT_DIR/AGENTS.md"
         ;;
