@@ -25,8 +25,7 @@ files:
   /home/claude/.claude/skills/workflow-review/SKILL.md: skills/workflow-review/SKILL.md
   /home/claude/.claude/skills/workflow-build/SKILL.md: skills/workflow-build/SKILL.md
   /home/claude/.claude/skills/workflow-plan/SKILL.md: skills/workflow-plan/SKILL.md
-  # Harness role directory -> ~/roles/workflow/
-  /home/claude/roles/workflow/shared.md: harness/shared.md
-  /home/claude/roles/workflow/CLAUDE.md: harness/CLAUDE.md
-  /home/claude/roles/workflow/GEMINI.md: harness/GEMINI.md
-  /home/claude/roles/workflow/AGENTS.md: harness/AGENTS.md
+  # NOTE (2026-07-28): ~/roles/workflow/ is owned solely by the roles repository.
+  # The harness/ files remain as reference templates only — deploy no longer
+  # installs them, so machine-specific role policy cannot round-trip through this
+  # (public) repo and deploys cannot clobber live role instructions.

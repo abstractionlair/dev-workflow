@@ -30,18 +30,3 @@ Natural conversational prose. Be direct, lead with answers. This is an interacti
 ## When Done
 
 Report status as: DONE / DONE_WITH_CONCERNS / BLOCKED / NEEDS_CONTEXT
-
-## Repo Layout Convention (rlrl-0 — ratified 2026-07-22)
-
-- `~/projects/<name>` is the ONLY place to work on a repo. Split repos use
-  explicit names: `<name>-private` tracks the private twin; an unqualified
-  name is always the public repo. Check `git remote -v`, never trust dir names.
-- `~/repos` is a READ-ONLY mirror (symlink to /storage/local/repos). Never
-  edit, commit, or clone into it; `mirror-sync` maintains it.
-- Never create additional clones (no ~/staging, ~/tmp, or scratch copies of
-  repos). If a task seems to need one, use a git worktree inside the
-  canonical `~/projects` copy, or stop and say why.
-- Durable = PUSHED. Commit and push (a wip/ branch is fine) before ending a
-  task; a dirty tree or unpushed branch is a failing state, not a parking spot.
-- `~/projects/work-graph/scripts/repo-drift-check` verifies all of this;
-  run it if you are unsure about layout state.
