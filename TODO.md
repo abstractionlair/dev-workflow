@@ -104,6 +104,37 @@ Where this lands:
 - `roles/implementer.md` — the implementer's process explicitly includes a refactor pass after tests are green.
 - `WORKFLOW.md` — the personal doc may mention this where it talks about implementation, though the personal doc's emphasis is on review-side trust mechanisms; this might fit better in the project-side role file alone.
 
+## Structural gap: every gate is sandboxed, so nothing verifies against reality
+
+Captured 2026-08-02 from the `computer-use-mcp` build, which ran the full stage sequence with review gates between every stage and still shipped a defect that made the product unusable in ordinary use.
+
+**What happened.** The spec pinned an exact `xdotool` invocation. Two independently written test suites asserted that argv. Six model reviews across six panels read that argv against the spec. Everything passed: 195 tests green, ruff and mypy clean, reviewers explicitly confirming interface fidelity tool by tool. The invocation hangs forever against a real X server whenever the pointer is already at the target coordinate — so clicking the same spot twice failed, which is not an edge case. It was found by a live click, minutes after the last gate closed.
+
+**Why nothing caught it.** The suites mock the subprocess layer, because a test that needs a display is a test that cannot run in CI. A mocked test can only assert that *the argv you intended is the argv you built*; it cannot tell you the argv is wrong. And every reviewer read the same argv against a spec that specified the same wrong thing, from inside sandboxes that could not execute it — the codex sandbox cannot open the host X socket at all.
+
+This is not six reviewers being lazy. It is six reviewers sharing one blind spot. The workflow's trust story rests on diversity of perspective, and diversity of perspective buys independence of *opinion*; it buys no independence from *reality*. Adding a seventh model does not thin this failure mode, because the property they share is not their training data — it is that none of them can run the thing.
+
+The same gap appeared in the human-facing half of the same project, which suggests it is general rather than a quirk of one defect: the remote-access path was designed, documented, and marked complete without the transport ever being exercised. Three separate things blocked it on first real use, one of which was an sshd policy that had forbidden the entire mechanism for weeks. **Documenting a path is not testing a path.**
+
+**Proposed fix — a live-verification stage that no model can satisfy.** After implementation review, before an artifact may move to `done/`, a stage whose exit criterion is running the real thing against the real world and reporting measured values, not assertions. Its distinguishing property is that it must be executed by whoever has un-sandboxed access — in practice the human, or the routing session — because a sandboxed reviewer *structurally cannot* discharge it. Notes toward a design:
+
+- The stage's output is numbers and observed strings, not a pass/fail claim: actual dimensions, actual returned text, actual exit codes. On this project the useful artifact was "screenshot over MCP: image/png 1920x1080", "out-of-bounds click -> Error: Coordinates (5000, 5000) are outside display bounds (1920x1080)".
+- It should name, in advance and in the spec, which behaviours can *only* be verified live. Any behaviour whose test must mock an external binary, a network, a display, or a clock is a candidate. That list is writable at spec time and is a natural companion to the failure-modes section already planned above.
+- It needs an explicit answer for what happens when live verification contradicts a passing test, since that is the interesting case: here the fix required changing the spec, both suites, and the code together.
+- Scale it like the rest of the workflow — a throwaway script for a small feature, something durable for a subsystem.
+
+**Where this lands:**
+- `ontology.md` — the artifact/state flow gains a stage, or `done/` gains an entry condition.
+- A new role file, or an extension of `roles/macro-reviewer.md` with an explicit non-delegable step.
+- `schemas/spec.md` — a section naming the behaviours that can only be verified live.
+- `WORKFLOW.md` — this belongs on Scott's "Additions I want to make" list, in his words not mine. Related items already there: "Failure-mode documentation alongside features" (the natural companion) and "Incident learning loop" (this entry is an instance of one).
+
+**Supporting evidence from the same build, worth keeping when this is designed:**
+- *Two independently written test suites are a working instrument.* Both were written from the same spec by different models that could not see each other's work. When six of one suite's tests failed, the implementer refused to edit them and filed a disputes document quoting each test against its spec clause; all six were test defects, and their author fixed them without weakening one. The structure made "test bug or code bug?" decidable, and made bending a test structurally unavailable to the implementer. This is the test-side analogue of "Independent re-implementation for the highest-stakes pieces" in `WORKFLOW.md`, and it was much cheaper than that sounds.
+- *Never prime a verifier.* A fix-verification pass given the implementer's own account of what changed returned an unqualified all-clear on all six fixes. A cold reviewer, told only what code to examine, found a real resource leak in the same code. A reviewer handed the change list checks whether the change is present, not whether it is sufficient.
+
+Decision needed: implement as a stage, or state explicitly that live verification is out of scope for the workflow and belongs to the operator — but the current silence reads as coverage that does not exist.
+
 ## Notes for future-me
 
 - The 3-model review of the v1.0 enhanced-review-workflow spec on 2026-04-01 said unanimously that it read as a design document, not a behavioral contract — missing interface signatures, Given/When/Then scenarios, error-path acceptance criteria, schema-required sections (Feature ID, References, Scenarios), and one internal contradiction (spec said reviewer follow-ups must not reveal which model wrote which review, while another section labeled them `Reviewer [model]`). v2.0 fixed it. The same critique could land on parts of the current project itself: ontology.md describes RFC and bug machinery in the language of "this is how it works" without the contracts that would let someone actually implement it.
