@@ -47,7 +47,7 @@ Replaces a broken open-model review pipeline with a working one (codex/GPT-5.4),
 **Purpose:** Parse session/thread ID from CLI JSON output.
 
 **Parameters:**
-- cli (str): Which CLI produced the output. One of "codex", "claude", "gemini".
+- cli (str): Which CLI produced the output. One of "codex", "claude", "agy" ("gemini" is a compatibility name).
 - raw_output (str): Raw JSON/JSONL output from the CLI invocation.
 
 **Returns:**
@@ -67,7 +67,7 @@ session_id = extract_session_id("codex", output)
 # session_id = "019d4686-9f64-77d2-b781-7511612c327c"
 
 # Gemini: JSON object with session_id field
-output = run("gemini -o json -p ...")
+output = run("agy-check-model --model 'Gemini 3.1 Pro (High)' --output-format json -p ...")
 session_id = extract_session_id("gemini", output)
 
 # Claude: JSON object with session_id field
@@ -166,7 +166,7 @@ grades = grade_reviews(
 
 ### Happy Path
 1. `codex exec -m gpt-5.4 --json ...` produces JSONL output from which `extract_session_id("codex", ...)` returns a valid thread_id.
-2. `gemini -o json -p ...` produces JSON from which `extract_session_id("gemini", ...)` returns a valid session_id.
+2. `agy-check-model --model 'Gemini 3.1 Pro (High)' --output-format json -p ...` produces JSON from which `extract_session_id("gemini", ...)` returns a valid session_id.
 3. `claude --output-format json -p ...` produces JSON from which `extract_session_id("claude", ...)` returns a valid session_id.
 4. Given 3 reviews where reviewer A flags "critical issue at file.py:47" and reviewer B says "file.py:47 is correct," `detect_contradictions` returns one Contradiction referencing both.
 5. Given a Contradiction and valid session IDs, `request_peer_followup` resumes both reviewer sessions and returns their responses.
@@ -392,7 +392,7 @@ New columns default to NULL, so existing rows are unaffected.
 ### External Dependencies
 - `codex` CLI (npm: @openai/codex) — installed globally
 - `claude` CLI — installed locally
-- `gemini` CLI (npm: @google/gemini-cli) — installed globally
+- Antigravity `agy` plus infrastructure-managed `agy-check-model` — the retired Gemini CLI is unsupported
 - All three CLIs authenticated via subscription credentials (no API keys needed)
 
 ### Assumptions
