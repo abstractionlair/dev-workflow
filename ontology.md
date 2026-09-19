@@ -133,7 +133,7 @@ Strategic docs don't move between directories. They're versioned in place:
 |------|-------|---------|-------|-----------------|
 | Planner | Strategic | Vision, Scope, Roadmap | -- | claude |
 | Spec Writer | Design | Specs | -- | claude |
-| Macro Reviewer | Quality | Reviews | All state transitions | gemini (docs), codex/gpt-5.4 (code) |
+| Macro Reviewer | Quality | Reviews | All state transitions | Antigravity via agy-check-model (docs), codex/gpt-5.4 (code) |
 | Micro Reviewer | Quality | Reviews | -- (advisory only) | codex/gpt-5.4 |
 | Skeleton Writer | Code | Interfaces, types | -- | claude |
 | Test Writer | Code | Test suites (RED) | -- | claude |
@@ -143,10 +143,10 @@ Strategic docs don't move between directories. They're versioned in place:
 
 | Artifact | Writer | Macro Review | Micro Review |
 |----------|--------|-------------|-------------|
-| Vision | planner | gemini | -- |
-| Scope | planner | gemini | -- |
-| Roadmap | planner | gemini | -- |
-| Spec | spec-writer | gemini | -- |
+| Vision | planner | checked Antigravity | -- |
+| Scope | planner | checked Antigravity | -- |
+| Roadmap | planner | checked Antigravity | -- |
+| Spec | spec-writer | checked Antigravity | -- |
 | Skeleton | skeleton-writer | codex/gpt-5.4 | codex/gpt-5.4 |
 | Tests | test-writer | codex/gpt-5.4 | codex/gpt-5.4 |
 | Implementation | implementer | codex/gpt-5.4 | codex/gpt-5.4 |

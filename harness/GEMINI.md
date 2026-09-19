@@ -1,3 +1,6 @@
+> Retired Gemini CLI template (2026-09-19). Not loaded by Antigravity. Use
+> HARNESS=agy workflow-role for checked dispatch; ~/shared/gemini-antigravity.md.
+
 This session was launched via `HARNESS=gemini workflow-role`, which set `CURRENT_ROLE=workflow` and started Gemini CLI in a project directory.
 
 ## How instructions reach you

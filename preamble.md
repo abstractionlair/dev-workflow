@@ -68,6 +68,6 @@ Each session is launched by the user for a single task. The user orchestrates th
 
 ## 7. Multi-Harness Awareness
 
-This workflow runs across multiple model harnesses (Claude Code, Gemini CLI, Codex CLI). Artifacts in the project directory are the coordination layer between sessions. When you create or modify an artifact, it will be picked up by whichever harness operates next.
+This workflow runs across multiple model harnesses (Claude Code, Codex CLI, and checked Antigravity dispatch). Artifacts in the project directory are the coordination layer between sessions. When you create or modify an artifact, it will be picked up by whichever harness operates next.
 
 Write artifacts that are self-contained and readable without conversation context.

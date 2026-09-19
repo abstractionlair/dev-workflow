@@ -11,24 +11,24 @@
     },
     "macro-reviewer": {
       "tool_by_artifact": {
-        "vision": "gemini",
-        "scope": "gemini",
-        "roadmap": "gemini",
-        "spec": "gemini",
+        "vision": "agy",
+        "scope": "agy",
+        "roadmap": "agy",
+        "spec": "agy",
         "skeleton": "codex",
         "tests": "codex",
         "implementation": "codex"
       },
       "model_by_artifact": {
-        "vision": "gemini-3.1-pro-preview",
-        "scope": "gemini-3.1-pro-preview",
-        "roadmap": "gemini-3.1-pro-preview",
-        "spec": "gemini-3.1-pro-preview",
+        "vision": "Gemini 3.1 Pro (High)",
+        "scope": "Gemini 3.1 Pro (High)",
+        "roadmap": "Gemini 3.1 Pro (High)",
+        "spec": "Gemini 3.1 Pro (High)",
         "skeleton": "codex/gpt-5.4",
         "tests": "codex/gpt-5.4",
         "implementation": "codex/gpt-5.4"
       },
-      "notes": "Big picture: design quality for docs, spec fidelity for code. MULTI-MODEL reviews go through the claude-hub review engine (python3 -m claude_hub.review_cli); its config/review_models.yaml is the authoritative reviewer roster \u2014 do not duplicate rosters here. The gemini tool_by_artifact entries are STALE: the standalone gemini CLI is retired (Antigravity/agy is not integrated with workflow-role); until that is resolved, run doc macro-reviews through the engine or override HARNESS explicitly."
+      "notes": "Big-picture docs use checked one-shot Antigravity dispatch; code uses Codex. Multi-model reviews use claude-hub review_cli and its authoritative config/review_models.yaml roster. Antigravity does not run role continuity hooks."
     },
     "micro-reviewer": {
       "tool": "codex",
@@ -64,13 +64,13 @@
       "cli": "claude",
       "entry_point": "CLAUDE.md"
     },
-    "gemini": {
-      "cli": "gemini",
-      "entry_point": "GEMINI.md"
-    },
     "codex": {
       "cli": "codex",
       "entry_point": "AGENTS.md"
+    },
+    "agy": {
+      "cli": "agy-check-model",
+      "entry_point": ".workflow/active-role.md"
     }
   }
 }

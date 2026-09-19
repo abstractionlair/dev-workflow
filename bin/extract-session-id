@@ -4,7 +4,7 @@
 # Usage:
 #   extract-session-id codex < output.jsonl
 #   extract-session-id claude < output.json
-#   extract-session-id gemini < output.json
+#   extract-session-id agy < output.json
 #   some_command | extract-session-id codex
 #
 # Exits non-zero if no session ID found.
@@ -12,7 +12,7 @@
 set -e
 
 if [ -z "$1" ]; then
-    echo "Usage: extract-session-id <codex|claude|gemini> < output" >&2
+    echo "Usage: extract-session-id <codex|claude|agy> < output" >&2
     exit 1
 fi
 
@@ -45,20 +45,20 @@ if not sid:
 print(sid)
 "
         ;;
-    gemini)
-        # Gemini JSON: {"session_id": "..."}
+    agy|gemini)
+        # Antigravity JSON: {"conversation_id": "..."} (gemini is a compatibility name)
         echo "$INPUT" | python3 -c "
 import json, sys
 data = json.loads(sys.stdin.read())
-sid = data.get('session_id', '')
+sid = data.get('conversation_id', '')
 if not sid:
-    print('Error: no session_id in gemini output', file=sys.stderr)
+    print('Error: no conversation_id in Antigravity output', file=sys.stderr)
     sys.exit(1)
 print(sid)
 "
         ;;
     *)
-        echo "Error: unknown CLI '$CLI'. Supported: codex, claude, gemini" >&2
+        echo "Error: unknown CLI '$CLI'. Supported: codex, claude, agy" >&2
         exit 1
         ;;
 esac

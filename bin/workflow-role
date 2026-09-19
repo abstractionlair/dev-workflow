@@ -6,16 +6,16 @@
 #   workflow-role macro-reviewer ~/projects/work-graph docs/VISION.md
 #   workflow-role spec-writer ~/projects/work-graph
 #   workflow-role micro-reviewer work-graph src/engine.py
-#   HARNESS=gemini workflow-role macro-reviewer ~/projects/work-graph docs/VISION.md
+#   HARNESS=agy workflow-role macro-reviewer ~/projects/work-graph docs/VISION.md
 #
 # Roles: planner, spec-writer, macro-reviewer, micro-reviewer,
 #        skeleton-writer, test-writer, implementer
 #
 # Harness selection:
 #   - Most roles: read from model-config.json
-#   - macro-reviewer: depends on artifact type (gemini for docs, codex for code)
+#   - macro-reviewer: depends on artifact type (Antigravity for docs, codex for code)
 #   - micro-reviewer: always codex/gpt-5.4
-#   - Override any role: HARNESS=claude|gemini|codex
+#   - Override any role: HARNESS=claude|agy|codex
 
 set -e
 
@@ -30,7 +30,7 @@ if [ -z "$1" ]; then
         basename "$f" .md
     done
     echo ""
-    echo "Override harness: HARNESS=claude|gemini|codex workflow-role <role> ..."
+    echo "Override harness: HARNESS=claude|agy|codex workflow-role <role> ..."
     exit 1
 fi
 
@@ -95,7 +95,7 @@ if [ -z "${HARNESS:-}" ] && [ -f "$CONFIG" ]; then
         # Macro-reviewer harness depends on artifact type
         ACLASS=$(artifact_class "$ARTIFACT")
         if [ "$ACLASS" = "doc" ]; then
-            HARNESS="gemini"
+            HARNESS="agy"
         else
             HARNESS="codex"
         fi
@@ -110,19 +110,23 @@ print(role_cfg.get('tool', 'claude'))
 " 2>/dev/null || echo "claude")
 
         case "$TOOL" in
-            claude|gemini|codex) HARNESS="$TOOL" ;;
+            claude|agy|codex) HARNESS="$TOOL" ;;
             *) HARNESS="claude" ;;
         esac
     fi
 fi
 
 HARNESS="${HARNESS:-claude}"
+if [ "$HARNESS" = gemini ]; then
+    echo "Gemini CLI retired. Use HARNESS=agy for checked one-shot dispatch; see ~/shared/gemini-antigravity.md." >&2
+    exit 2
+fi
 
 # Look up model-specific guidance
 # Maps harness/model to a model family for guidance lookup
 MODEL_FAMILY=""
 case "$HARNESS" in
-    gemini) MODEL_FAMILY="gemini" ;;
+    agy) MODEL_FAMILY="gemini" ;;
     codex) MODEL_FAMILY="gpt" ;;
     claude) MODEL_FAMILY="claude" ;;
 esac
@@ -243,9 +247,12 @@ echo ""
 # Build harness-specific flags and prep
 HARNESS_FLAGS=()
 case "$HARNESS" in
-    gemini)
-        # Gemini sandbox restricts to project dir — whitelist the deploy tree
-        HARNESS_FLAGS+=(--include-directories "$HOME/deploy/dev-workflow")
+    agy)
+        # One-shot dispatch: role/continuity hooks are not installed for Antigravity.
+        cd "$PROJECT_DIR"
+        exec "$HOME/bin/agy-check-model" --model 'Gemini 3.1 Pro (High)' \
+            --sandbox --add-dir "$DEPLOY_DIR" --print-timeout 30m \
+            -p "Read $DEPLOY_DIR/preamble.md and .workflow/active-role.md, then carry out that assignment." "$@"
         ;;
     codex)
         # Codex reads the full filesystem (--sandbox read-only), so no context

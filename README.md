@@ -77,7 +77,7 @@ Any harness that can read files works: point the model at the relevant role file
 codex "Follow the instructions in ~/deploy/dev-workflow/roles/macro-reviewer.md. Review specs/proposed/my-feature.md against the schema in ~/deploy/dev-workflow/schemas/spec.md."
 ```
 
-Or use the role launcher, `bin/workflow-role`, which prepares the session context and picks the harness from `model-config.json` (supported harnesses: claude, gemini, codex).
+Or use the role launcher, `bin/workflow-role`, which prepares the session context and picks the harness from `model-config.json` (supported role harnesses: claude, codex; agy is checked one-shot dispatch).
 
 ### Progressive formality
 
@@ -104,7 +104,7 @@ The project directory is the coordination layer. No messaging system needed.
 1. Write a spec in Claude terminal
 2. Review it in Codex terminal (different model catches different things)
 3. Back to Claude for implementation
-4. Review implementation in Gemini terminal
+4. Review implementation through the hub review engine
 
 Each model reads the current project state from the filesystem. The coordinator routes.
 

@@ -76,7 +76,7 @@ Micro-reviewer does NOT perform gatekeeper actions.
 If reviewing in the same model that wrote the artifact, flag it. For cross-model review, use `workflow-role` in a separate terminal:
 
 ```bash
-workflow-role macro-reviewer <project> <artifact>   # gemini for docs, codex for code
+workflow-role macro-reviewer <project> <artifact>   # checked Antigravity for docs, Codex for code
 workflow-role micro-reviewer <project> <artifact>   # codex/gpt-5.4
 ```
 
